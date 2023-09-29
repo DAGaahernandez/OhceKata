@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestPlatform.TestHost;
+using System.Xml.Linq;
 
 namespace OhceKata.Test;
 
@@ -8,16 +9,19 @@ public class OhceShould {
         
     }
 
-    [Test]
-    public void give_greetings_to_user() {
+    [TestCase("ohce Pedro", "Pedro")]
+    [TestCase("ohce Maria", "Maria")]
+    [TestCase("ohce Pepe", "Pepe")]
+    [TestCase("ohce Juan", "Juan")]
+    public void give_greetings_to_user(string command, string name) {
         //Given;
         
         //When
         var console = new MockConsole();
-        new Ohce(console).Start();
+        new Ohce(console).Start(command);
         
         //Then
-        Assert.AreEqual(console.LastText, "¡Buenos días Pedro!");
+        Assert.AreEqual( $"¡Buenos días {name}!", console.LastText);
     }
 }
 
@@ -40,7 +44,14 @@ public class Ohce {
         _console = console;
     }
 
-    public void Start() {
-        _console.Write("¡Buenos días Pedro!");
+    public void Start(string command)
+    {
+
+        var arguments = command.Split(" ");
+        if (arguments[0] == "ohce")
+        {
+            _console.Write($"¡Buenos días {arguments[1]}!");
+        }
+        
     }
 }
